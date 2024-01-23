@@ -7,6 +7,10 @@ module HirotoPush
   class Error < StandardError; end
   # coding: utf-8
   def self.hiroto_push
+    # コミットメッセージの入力
+    print 'Enter the commit message: '
+    commit_message = gets.chomp.strip
+
     remote_string = IO.popen('git remote -v'){|io| io.read}
     url = remote_string.lines.first.chomp
     pattern = "github\\.com:([^\\/]+)/([^\\.]+)\\.git"
@@ -23,7 +27,7 @@ module HirotoPush
     system("git add .")
 
     # コミット
-    system('git commit -m "Update file"')
+    system("git commit -m '#{commit_message}'")
 
     # masterからmainに変更
     system('git branch -M main')
