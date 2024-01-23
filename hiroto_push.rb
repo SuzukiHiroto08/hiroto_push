@@ -1,37 +1,38 @@
 # coding: utf-8
-
-# coding: utf-8
-
-remote_string = IO.popen('git remote -v'){|io| io.read}
-url = remote_string.lines.first.chomp
-pattern = "github\\.com:([^\\/]+)/([^\\.]+)\\.git"
-matches = url.match(pattern)
-
-USERNAME = matches[1]
-REPO_NAME = matches[2]
-
-
-# リモートリポジトリのSSH
-REMOTE_REPO_URL = "git@github.com:#{USERNAME}/#{REPO_NAME}.git"
-
-# 変更のステージング
-system("git add .")
-
-# コミット
-system('git commit -m "Update file"')
-
-# masterからmainに変更
-system('git branch -M main')
-
-# remoteリポジトリに接続してるかどうかの判定
-existing_remote = system('git remote -v')
-
-if existing_remote.nil?
-  system("git remote add origin #{REMOTE_REPO_URL}")
-  puts "リモートリポジトリを追加しました。"
-else
-  puts "リモートリポジトリはすでに存在しています。追加処理はスキップされました。"
+module HirotoPush
+  def self.hiroto_push
+    remote_string = IO.popen('git remote -v'){|io| io.read}
+    url = remote_string.lines.first.chomp
+    pattern = "github\\.com:([^\\/]+)/([^\\.]+)\\.git"
+    matches = url.match(pattern)
+    
+    USERNAME = matches[1]
+    REPO_NAME = matches[2]
+    
+    
+    # リモートリポジトリのSSH
+    REMOTE_REPO_URL = "git@github.com:#{USERNAME}/#{REPO_NAME}.git"
+    
+    # 変更のステージング
+    system("git add .")
+    
+    # コミット
+    system('git commit -m "Update file"')
+    
+    # masterからmainに変更
+    system('git branch -M main')
+    
+    # remoteリポジトリに接続してるかどうかの判定
+    existing_remote = system('git remote -v')
+    
+    if existing_remote.nil?
+      system("git remote add origin #{REMOTE_REPO_URL}")
+      puts "リモートリポジトリを追加しました。"
+    else
+      puts "リモートリポジトリはすでに存在しています。追加処理はスキップされました。"
+    end
+    
+    # プッシュ()
+    system('git push -u origin main')
+  end
 end
-
-# プッシュ()
-system('git push -u origin main')
